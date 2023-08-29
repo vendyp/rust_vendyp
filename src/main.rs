@@ -2,6 +2,7 @@
 
 use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use qstring::QString;
+use serde_derive::Deserialize;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -15,6 +16,16 @@ async fn say_hello(req: HttpRequest) -> String {
     let name = qs.get("name").unwrap();
 
     format!("Hello, {}!", name)
+}
+
+#[derive(Deserialize)]
+struct Info {
+    name: String,
+}
+
+#[get("/info")]
+async fn info(info: web::Query<Info>) -> String {
+    format!("Welcome {}!", info.name)
 }
 
 #[post("/echo")]
@@ -33,6 +44,7 @@ async fn main() -> std::io::Result<()> {
             .service(hello)
             .service(echo)
             .service(say_hello)
+            .service(info)
             .route("/hey", web::get().to(manual_hello))
     })
         .bind(("127.0.0.1", 8080))?

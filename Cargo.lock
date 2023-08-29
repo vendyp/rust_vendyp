@@ -835,6 +835,7 @@ dependencies = [
  "actix-web",
  "qstring",
  "serde",
+ "serde_derive",
 ]
 
 [[package]]
